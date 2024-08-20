@@ -6,6 +6,7 @@ import json
 import pandas as pd
 import math
 import yaml
+from PIL import Image
 from utils.calibration import Calibration
 
 
@@ -21,7 +22,7 @@ class Sequence:
     | >>> seq.vis_all(output)
     """
 
-    def __init__(self, sequence_path, config_file='config/config.yaml'):
+    def __init__(self, sequence_path, config_file='config/config.yaml', save_depth=False):
         """
         Initialise the class Sequence. This class contains the methods related to
         access the sensor and annotation information at certain timestamp
@@ -76,7 +77,8 @@ class Sequence:
                         'bicycle': 1.5,
                         'vehicle': 1.5
                         }
-
+        if save_depth:
+            self.config['lidar_proj']['color_mode'] = 'distance'
         # load timestamps
         self.timestamp_camera = self.load_timestamp(os.path.join(
             self.sequence_path, self.config['camera_timestamp_file']))
@@ -94,6 +96,7 @@ class Sequence:
         self.end_timestamp = np.max([self.timestamp_camera['time'][-1],
                                      self.timestamp_lidar['time'][-1],
                                      self.timestamp_radar['time'][-1]])
+        
 
     def __load_annotations(self):
         if (os.path.exists(self.annotations_path)):
@@ -863,3 +866,29 @@ class Sequence:
         points = points.astype(int)
 
         return points
+
+
+
+    def save_depth(self, output, out_dir):
+        """method to diplay all the sensors/annotations
+
+        :param output: gets the output from self.get_from_timestamp(t)
+        :type output: dict
+        :param wait_time: how to long to wait until display next frame. 0 means it will wait for any key, defaults to 1
+        :type wait_time: int, optional
+        """
+        # TODO lidar timestamp
+        # TODO utils for visualiation
+        if (output != {}):
+                os.makedirs(out_dir, exist_ok=True)
+                depth_map = output['sensors']['proj_lidar_left']
+                # print(depth_map.shape)
+                _, lidar_timestamp = self.get_id(
+                    self.current_time, self.timestamp_lidar, self.config['sync']['lidar'])
+                depth_map_img = Image.fromarray(depth_map.astype(np.float32))
+                depth_map_img.save(os.path.join(out_dir,  str(
+                    lidar_timestamp) + '_depth.tiff'))
+                
+
+
+       

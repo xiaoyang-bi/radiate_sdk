@@ -10,9 +10,9 @@ sequence_name = 'tiny_foggy'
 dt = 0.25
 
 # load sequence
-seq = radiate.Sequence(os.path.join(root_path, sequence_name))
+seq = radiate.Sequence(os.path.join(root_path, sequence_name), save_depth=True)
 
 # play sequence
 for t in np.arange(seq.init_timestamp, seq.end_timestamp, dt):
     output = seq.get_from_timestamp(t)
-    seq.vis_all(output, 0)
+    seq.save_depth(output, '../tiny_foggy/depth')

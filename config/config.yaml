@@ -6,13 +6,13 @@ camera_timestamp_file: 'zed_left.txt'
 # whether to use or not some sensors
 use_camera_left_raw: False
 use_camera_right_raw: False
-use_camera_left_rect: False
+use_camera_left_rect: True
 use_camera_right_rect: True
 use_radar_polar: False
 use_radar_cartesian: True
 use_lidar_pc: True
 use_lidar_bev_image: True
-use_proj_lidar_left: False
+use_proj_lidar_left: True
 use_proj_lidar_right: True
 
 # wheter to save the images
@@ -31,7 +31,7 @@ lidar_proj:
     max_dist: 80
     remove_ground: False
     ground_thresh: 1.5
-    color_mode: 'same'   # 'same', 'pseudo_distance', 'distance'
+    color_mode: 'pseudo_distance'   # 'same', 'pseudo_distance', 'distance'
 
 
 # width and height resolution of a bird's eye view lidar image
